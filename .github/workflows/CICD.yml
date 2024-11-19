@@ -31,5 +31,5 @@ jobs:
             sudo yum install -y httpd
             sudo systemctl start httpd
             sudo systemctl enable htppd
-            cd home
+            cd home/src
             sudo mv * /var/www/html

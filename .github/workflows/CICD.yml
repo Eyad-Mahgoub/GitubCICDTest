@@ -1,4 +1,6 @@
-name: CICD Pipeline
+name: CICD 
+
+run-name: CICD EC2 Workflow
 
 on:
   push:
@@ -11,8 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
   steps:
-    - name: Checkout Files
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
     - name: Deploy to Server 1
       uses: easingthemes/ssh-deploy@main
       env:

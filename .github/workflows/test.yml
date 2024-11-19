@@ -4,7 +4,7 @@ run-name: ${{ github.actor }} is testing github actions
 on: [push]
   
 jobs:
-  test:
+  ExploreGithubActions:
     runs-on: ubuntu-latest
     steps:
       - run: echo "Hello world"
@@ -12,9 +12,10 @@ jobs:
       - run: echo "Server = ${{ runner.os }}"
       - run: echo "branch name = ${{ github.ref }} | Repo = ${{ github.repository }}"
       - name: checkout code
-      - uses: actions/checkout@v4
+        uses: actions/checkout@v4
       - run: echo "Repo Cloned"
       - run: echo "Files:"
       - name: list files 
-      - run: ls ${{ github.workspace }}
+        run: |
+          ls ${{ github.workspace }}
       - run: echo "Job status = ${{ job.status }}"

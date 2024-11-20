@@ -10,7 +10,7 @@ CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
 
 WORKDIR /var/www/html/
 
-COPY src/* /var/www/html/
+COPY src/ /var/www/html/
 
 
 EXPOSE 80

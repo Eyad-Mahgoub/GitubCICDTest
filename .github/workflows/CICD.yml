@@ -10,7 +10,7 @@ on:
 env:
   AWS_REGION: us-east-1
   ECR_REPOSITORY: cicd/testgithubactions
-  ECS_SERVICE:  
+  # ECS_SERVICE:  
   ECS_CLUSTER: GithubAcTest 
   ECS_TASK_DEFINITION: GithubActionTaskDefinition-revision1
   CONTAINTER_NAME: GIthubActionsContainer

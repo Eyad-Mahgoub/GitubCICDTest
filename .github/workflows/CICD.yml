@@ -12,7 +12,7 @@ env:
   ECR_REPOSITORY: cicd/testgithubactions
   ECS_SERVICE: GithubActionTestService
   ECS_CLUSTER: GithubActionTestCluster 
-  ECS_TASK_DEFINITION: .aws/GithubActionTaskDefinition.json
+  ECS_TASK_DEFINITION: aws/GithubActionTaskDefinition.json
   CONTAINER_NAME: GithubActionsTestContainer
 
 jobs:

@@ -13,7 +13,7 @@ env:
   ECS_SERVICE: GithubActionTestService
   ECS_CLUSTER: GithubActionTestCluster 
   ECS_TASK_DEFINITION: ./GithubActionTaskDefinition.json
-  CONTAINTER_NAME: GithubActionsTestContainer
+  CONTAINER_NAME: GithubActionsTestContainer
 
 jobs:
   StoreOnECR:

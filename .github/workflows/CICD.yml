@@ -10,10 +10,10 @@ on:
 env:
   AWS_REGION: us-east-1
   ECR_REPOSITORY: cicd/testgithubactions
-  # ECS_SERVICE:  
-  # ECS_CLUSTER: GithubAcTest 
-  # ECS_TASK_DEFINITION: GithubActionTaskDefinition-revision1
-  # CONTAINTER_NAME: GIthubActionsContainer
+  ECS_SERVICE: GithubActionTestService
+  ECS_CLUSTER: GithubActionTestCluster 
+  ECS_TASK_DEFINITION: ./GithubActionTaskDefinition.json
+  CONTAINTER_NAME: GithubActionsTestContainer
 
 jobs:
   StoreOnECR:
@@ -43,48 +43,48 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-  #     - name: Fill in the new Image ID in the Amazon ECS Task Definition
-  #       id: task-def
-  #       uses: aws-actions/amazon-ecs-render-task-definition@c804dfbdd57f713b6c079302a4c01db7017a36fc
+      - name: Fill in the new Image ID in the Amazon ECS Task Definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@c804dfbdd57f713b6c079302a4c01db7017a36fc
+        with:
+          task-definition: ${{ env.ECS_TASK_DEFINITION }}
+          container-name: ${{ env.CONTAINER_NAME }}
+          image: ${{ steps.build-image.outputs.image }}
+
+      
+
+  # DeploytoEc2:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Deploy to Server 1
+  #       uses: easingthemes/ssh-deploy@main
   #       with:
-  #         task-definition: ${{ env.ECS_TASK_DEFINITION }}
-  #         container-name: ${{ env.CONTAINER_NAME }}
-  #         image: ${{ steps.build-image.outputs.image }}
-
+  #         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+  #         REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+  #         REMOTE_USER: ${{ secrets.REMOTE_USER }}
+  #         TARGET: ${{ secrets.TARGET }}
       
-
-  DeploytoEc2:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Deploy to Server 1
-        uses: easingthemes/ssh-deploy@main
-        with:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
-          REMOTE_USER: ${{ secrets.REMOTE_USER }}
-          TARGET: ${{ secrets.TARGET }}
-      
-      - name: Execute Remote SSH commands
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.REMOTE_HOST }}
-          username: ${{ secrets.REMOTE_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            sudo apt-get -y update
-            sudo apt-get -y install ca-certificates curl
-            sudo install -m 0755 -d /etc/apt/keyrings
-            sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-            sudo chmod a+r /etc/apt/keyrings/docker.asc
-            echo \
-              "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-              $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-              sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-            sudo apt-get -y update
-            sudo apt-get -y install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-            cd home
-            sudo docker stop testwebsite
-            sudo docker rm testwebsite
-            sudo docker build -t testimg:v1 .
-            sudo docker run -d --name testwebsite -p 9080:80 testimg:v1 
+  #     - name: Execute Remote SSH commands
+  #       uses: appleboy/ssh-action@master
+  #       with:
+  #         host: ${{ secrets.REMOTE_HOST }}
+  #         username: ${{ secrets.REMOTE_USER }}
+  #         key: ${{ secrets.SSH_PRIVATE_KEY }}
+  #         script: |
+  #           sudo apt-get -y update
+  #           sudo apt-get -y install ca-certificates curl
+  #           sudo install -m 0755 -d /etc/apt/keyrings
+  #           sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+  #           sudo chmod a+r /etc/apt/keyrings/docker.asc
+  #           echo \
+  #             "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  #             $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  #             sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  #           sudo apt-get -y update
+  #           sudo apt-get -y install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+  #           cd home
+  #           sudo docker stop testwebsite
+  #           sudo docker rm testwebsite
+  #           sudo docker build -t testimg:v1 .
+  #           sudo docker run -d --name testwebsite -p 9080:80 testimg:v1 

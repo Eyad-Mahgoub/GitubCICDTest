@@ -1,6 +1,6 @@
 name: CICD 
 
-run-name: CICD EC2 Workflow
+run-name: CICD AWS ECS Workflow
 
 on:
   push:
